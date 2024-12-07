@@ -5,18 +5,21 @@ import qrcode
 import tempfile
 import time
 import subprocess
+from printer import BrotherQL600
 
 DEFAULT_VID_NAME='Unknown'
 DEFAULT_VID_DESCR='Created by [ImageUploader](https://github.com/nosqlgeek/VideoUploader'
+DEFAULT_PRINTER=BrotherQL600()
 
 @click.command()
 @click.argument('file')
-@click.option('-n', '--name', default=DEFAULT_VID_NAME)
 @click.option('-d', '--description', default=DEFAULT_VID_DESCR)
-def main(file, name, description):
+def main(file, description):
     print("Starting ...")
-    uploadfile(file, name, description)
-
+    id = generate_id()
+    url = uploadfile(file, id, description)
+    png = create_qr_code(id, url)
+    print_qr_code(png)
 
 '''
 Generate an id based on the current time
@@ -31,7 +34,7 @@ def generate_id():
 '''
 Upload the file to Vimeo
 '''
-def uploadfile(file, name, descr):
+def uploadfile(file, name=DEFAULT_VID_NAME, descr=DEFAULT_VID_DESCR):
 
     print("Uploading the file to Vimeo ...")
 
@@ -65,10 +68,16 @@ def create_qr_code(id, url):
     image.save(loc)
     return loc
 
-def print_qr_code(path):
-    print("Printing QR code ...")
-    subprocess.run(["lp", path], check=True)
-    print(f"Image {path} has been sent to the printer.")
+def print_qr_code(path, printer=DEFAULT_PRINTER):
+    try:
+        print("Printing QR code ...")
+        subprocess.run(["lp","-d", printer.name, "-o", "media={}".format(printer.media_size), path], check=True)
+        print("Image {} has been sent to the printer.".format(path))
+        return True
+    except:
+        print("Could not print {}.".format(path))
+        return False
+
 
 
 

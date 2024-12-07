@@ -11,9 +11,9 @@ def test_qrcode():
 def test_upload_and_qr():
 
     id = videoupload.generate_id()
-    url = videoupload.uploadfile('test.mov', id, videoupload.DEFAULT_VID_DESCR)
-    png = videoupload.create_qr_code(url)
-    videoupload.print_qr_code(png)
+    url = videoupload.uploadfile('test.mov', id)
+    png = videoupload.create_qr_code(id, url)
+    status = videoupload.print_qr_code(png)
 
 
 

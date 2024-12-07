@@ -9,6 +9,7 @@ setup(
         'PyVimeo',
         'qrcode',
         'pillow',
+        'obs-websocket-py',
     ],
     entry_points={
         'console_scripts': [
