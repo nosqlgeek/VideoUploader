@@ -7,6 +7,8 @@ setup(
     install_requires=[
         'Click',
         'PyVimeo',
+        'qrcode',
+        'pillow',
     ],
     entry_points={
         'console_scripts': [
